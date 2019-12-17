@@ -17,19 +17,11 @@ int main() {
     int fd = open(BackingFile, O_RDWR, AccessPerms);
     if (fd < 0) report_and_exit("Can't get file descriptor...");
 
-    char* memptr = static_cast<char *>(mmap(nullptr,
-                                            ByteSize,
-                                            PROT_READ | PROT_WRITE,
-                                            MAP_SHARED,
-                                            fd,
-                                            0));
+    char* memptr = static_cast<char *>(mmap(nullptr,ByteSize,PROT_READ | PROT_WRITE, MAP_SHARED,fd, 0));
+    
     if ((caddr_t) -1 == memptr) report_and_exit("Can't access segment...");
 
-
-    sem_t* semptr = sem_open(SemaphoreName,
-                             O_CREAT,
-                             AccessPerms,
-                             0);
+    sem_t* semptr = sem_open(SemaphoreName, O_CREAT, AccessPerms, 0);
     if (semptr == (void*) -1) report_and_exit("sem_open");
 
     if (!sem_wait(semptr)) {
